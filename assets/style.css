@@ -1,0 +1,33 @@
+
+nav {
+
+font-size: large;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+    background-image:url("Grey Gradient Background Bokeh Glam Free Vector.jpg") ;
+    background-repeat: no-repeat;
+    background-size: cover;
+   
+}
+
+main {
+    margin-top: 10%;
+}
+main .card-header {
+    background-color: rgb(206, 204, 204);
+}
+
+footer {
+    color:  rgb(102, 102, 102);
+    background-color:rgb(45, 48, 51);
+    padding: 10px;
+    text-align: center;
+    border-top-style: solid;
+    border-top-width: 5px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
