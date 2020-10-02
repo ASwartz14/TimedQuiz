@@ -1,15 +1,19 @@
-var startBtn = document.getElementById("start");
-var submitBtn = document.getElementById("submit");
-var timerEl = document.getElementById("timer");
-var scoreEl = document.getElementById("score");
-var finishEl = document.getElementById("finish");
-var finalScoreEl = document.getElementById("enterScore");
-var answerPoss = document.getElementById("As")
-var qEl = document.getElementById("Qs")
-var secLeft = 60;
-var qNumber= -1;
-var answer;
-var playerName;
+// Set my variables and hook with the DOM
+let startBtn = document.getElementById("start");
+let submitBtn = document.getElementById("submit");
+let timerEl = document.getElementById("timer");
+let scoreEl = document.getElementById("points");
+let finishEl = document.getElementById("finish");
+let finalScoreEl = document.getElementById("scoreBox");
+let answerPoss = document.getElementById("As")
+let qEl = document.getElementById("Qs")
+let secLeft = 60;
+let qNumber = -1;
+let score = 1;
+let answer="";
+let playerName="";
+
+// My questions object
 const questions = [
 {
     ask: "What is the HTML tag under which one can write the JavaScript code?",
@@ -17,9 +21,9 @@ const questions = [
     answer: "<script>"
 },
 {
-    ask: "Which of the following function of String object creates a string to be displayed as bold as if it were in a <b> tag?",
-    choices: ["anchor()", "big()", "blink()","bold()"],
-    answer: "bold()"
+    ask: "Which of the following function of Array object extracts a section of an array and returns a new array?",
+    choices: ["reverse()", "shift()", "blink()","slice()"],
+    answer: "slice()"
 },
 {        
     ask: "Which of the following is not a reserved word in JavaScript?",
@@ -28,7 +32,7 @@ const questions = [
 },
 {
     ask: "Which of the following is correct about JavaScript?",
-    choices: ["JavaScript is a lightweight, interpreted programming language.","JavaScript has object-oriented capabilities that allows you to build interactivity into otherwise static HTML pages.","The general-purpose core of the language has been embedded in Netscape, Internet Explorer, and other web browsers.","All of the above."],
+    choices: ["JavaScript is a lightweight, interpreted programming language.","JavaScript has object-oriented capabilities that allows you to build interactivity into otherwise static HTML pages.","The general-purpose core of the language has been embedded in Netscape, Internet Explorer, and other web browsers.","All of the above"],
     answer : "All of the above"
 },
 {
@@ -53,15 +57,16 @@ const questions = [
 },
 {
     ask: "Which of the following function of String object returns the characters in a string beginning at the specified location through the specified number of characters?",
-    choices: ["slice()","split()","substr()","search()"],
-    answer : "substr()"
+    choices: ["toPrecision()","toExponential()","toFixed()","toLocaleString()"],
+    answer : "toPrecision()"
 },
 {
-    ask: "Which of the following function of String object creates a string to be displayed as bold as if it were in a <b> tag?",
+    ask: "Which of the following function of Number object defines how many total digits to display of a number?",
     choices: ["anchor()","big()","blink()","bold()"],
     answer: "bold()"
 },
 ];
+// Sets the stage for the quiz allowing me to use only one HTML for quiz, instructions, and finish page.
 document.getElementById("quiz").classList.add("d-none");
 document.getElementById("finish").classList.add("d-none");
 function startTime(){
@@ -71,25 +76,34 @@ function startTime(){
     setTimer();
     goQuestions();
 }
-
+// Function to set my timer
 function setTimer(){
-       timeleft = setInterval(function() {
-        secLeft--;
+      let timeleft = setInterval(function() {
         timerEl.textContent = "Time: " + secLeft;
-
-        if(secLeft >= 0){
-            clearInterval(secLeft);
+        secLeft--;
+        if(secLeft === -1 ||qNumber === questions.length){
+            clearInterval(timeleft);
+            endGame();
         }
     }, 1000);
+// Switches to the finish screen when questions are done or player out of time
+    function endGame(){
+        if (secLeft === -1 ||qNumber === questions.length) {
+            document.getElementById("quiz").classList.add("d-none");
+            document.getElementById("finish").classList.remove("d-none");
+        }
+
+}
+ // Generates and displays questions
 }
 function goQuestions() {
     qNumber++;
-    answer = questions[qNumber].answer
+    answer = questions[qNumber].answer;
 
     qEl.textContent = questions[qNumber].ask;
     answerPoss.innerHTML = "";
 
-    var choices = questions[qNumber].choices;
+    let choices = questions[qNumber].choices;
     for (var i = 0; i < choices.length; i++) {
         var next = document.createElement("button");
         
@@ -97,41 +111,44 @@ function goQuestions() {
         ansBtn = answerPoss.appendChild(next).setAttribute("class","p-3 m-1 btn btn-light");
     }
 }
+// logs score to highscore html and local storage
 startBtn.addEventListener("click",startTime);
 submitBtn.addEventListener("click",function(event) {
     event.stopPropagation();
     giveScore();
 
-    window.location.href = "highscore.html"
+    window.location.href="highscore.html"
 });
 
 function giveScore() {
-    playerNameIn = document.getElementById("playerName").value
-    var newScore = {
-        name: playerNameIn,
-        score:secLeft
+    name = document.getElementById("nameInput").value
+    let newScore = {
+        playerName: name,
+        score: secLeft + score,
     };
-    var highScores =JSON.parse(localStorage.getItem("highScores")||"[]");
+    let highScores =JSON.parse(localStorage.getItem("enterScore")||"[]");
 
     highScores.push(giveScore)
-    localStorage.setItem("highScores", JSON.stringify(highScores));
+    localStorage.setItem("scoreList", JSON.stringify(highScores));
+    console.log(giveScore());
 }
-
+//Shows feedback when questions are answered. And deducts time if wrong. 
 function hideYesNo() {
-    var feedback = document.getElementById("YesNo").style.visibility ="hidden";
+   let feedback = document.getElementById("YesNo").style.visibility ="hidden";
 }
 
 function showYesNo(){
-    var feedback = document.getElementById("YesNo").style.visibility ="visible";
+    let feedback = document.getElementById("YesNo").style.visibility ="visible";
 }
 answerPoss.addEventListener("click",function(event) {
-    var feedback = document.getElementById("YesNo")
-
+    let feedback = document.getElementById("YesNo")
     if (answer === event.target.textContent) {
         feedback.innerHTML = "Correct!";
         feedback.style.color ="green";
+      
         setTimeout(hideYesNo,1000);
         showYesNo();
+        scoreUp();
     } else {
         feedback.innerHTML = "Incorrect.";
         feedback.style.color = "red";
@@ -140,4 +157,12 @@ answerPoss.addEventListener("click",function(event) {
         showYesNo();
     }
     goQuestions()
+
 });
+// Controls the score element of the quiz page
+function scoreUp() {
+        scoreEl.textContent = "Score: " + score;
+        score++;
+}
+
+
