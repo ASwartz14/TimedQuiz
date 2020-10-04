@@ -4,14 +4,17 @@ let submitBtn = document.getElementById("submit");
 let timerEl = document.getElementById("timer");
 let scoreEl = document.getElementById("points");
 let finishEl = document.getElementById("finish");
-let finalScoreEl = document.getElementById("scoreBox");
 let answerPoss = document.getElementById("As")
 let qEl = document.getElementById("Qs")
+let finishSc = document.getElementById("enterScore");
 let secLeft = 60;
 let qNumber = -1;
 let score = 1;
 let answer="";
 let playerName="";
+let finalScore= "";
+
+
 
 // My questions object
 const questions = [
@@ -67,8 +70,10 @@ const questions = [
 },
 ];
 // Sets the stage for the quiz allowing me to use only one HTML for quiz, instructions, and finish page.
-document.getElementById("quiz").classList.add("d-none");
-document.getElementById("finish").classList.add("d-none");
+
+    document.getElementById("quiz").classList.add("d-none");
+    document.getElementById("finish").classList.add("d-none");
+
 function startTime(){
     document.getElementById("instructions").classList.add("d-none");
     document.getElementById("quiz").classList.remove("d-none");
@@ -83,14 +88,13 @@ function setTimer(){
         secLeft--;
         if(secLeft === -1 ||qNumber === questions.length){
             clearInterval(timeleft);
-            endGame();
+            endGame(showScore());
         }
     }, 1000);
 // Switches to the finish screen when questions are done or player out of time
     function endGame(){
         if (secLeft === -1 ||qNumber === questions.length) {
-            document.getElementById("quiz").classList.add("d-none");
-            document.getElementById("finish").classList.remove("d-none");
+        
         }
 
 }
@@ -111,27 +115,38 @@ function goQuestions() {
         ansBtn = answerPoss.appendChild(next).setAttribute("class","p-3 m-1 btn btn-light");
     }
 }
-// logs score to highscore html and local storage
+
+// Finish screen score log
+function showScore() {
+ document.getElementById("quiz").classList.add("d-none");
+ document.getElementById("finish").classList.remove("d-none");
+ finalScore = score += secLeft;
+ finishSc.textContent = "Final Score: " + finalScore + "!";
+}
+// event listeners for start quiz and submit name to score page
 startBtn.addEventListener("click",startTime);
-submitBtn.addEventListener("click",function(event) {
+submitBtn.addEventListener("click", function(event){
     event.stopPropagation();
     giveScore();
+    window.location.href ="highscore.html";
 
-    window.location.href="highscore.html"
 });
 
-function giveScore() {
-    name = document.getElementById("nameInput").value
-    let newScore = {
-        playerName: name,
-        score: secLeft + score,
-    };
-    let highScores =JSON.parse(localStorage.getItem("enterScore")||"[]");
+// logs score to highscore html and local storage
 
-    highScores.push(giveScore)
-    localStorage.setItem("scoreList", JSON.stringify(highScores));
-    console.log(giveScore());
+function giveScore() {
+    let highScore = JSON.parse(localStorage.getItem("highScore")|| "[]");
+    location.replace("highscore.html");
+    let playerName = document.getElementById("nameInput").value
+    var finalS = {
+        name: playerName,
+        score: finalScore,
+    };
+   highScore.push(finalS);
+   localStorage.setItem("highScore", JSON.stringify(highScore));
+ 
 }
+
 //Shows feedback when questions are answered. And deducts time if wrong. 
 function hideYesNo() {
    let feedback = document.getElementById("YesNo").style.visibility ="hidden";
