@@ -16,10 +16,12 @@ Used bootstrap to create a responsive and easy to use UI
 Play to freshen up your javascript skills
 
 ## Visuals 
-* Video of working quiz.
+* gif of working quiz.
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/66501008/95029733-2a85be80-065f-11eb-93e3-8d37604d8cd7.gif)
+
 
 ## Website Link
-* [Deployed Timed JavaScript Quiz]()
+* [Deployed Timed JavaScript Quiz](https://aswartz14.github.io/TimedQuiz/)
 
 ## Licencing
 * none required, all built with bootstrap and javascript
